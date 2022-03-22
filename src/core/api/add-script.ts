@@ -1,10 +1,10 @@
 import { createReadStream, createWriteStream } from "fs";
-import { minify } from "uglify-js";
+import { minify } from "@swc/core";
 import { directoryExist } from "../../utils";
 import { uploadToS3 } from "./aws";
 
 export const addScript = ({ req, res }) => {
-  setImmediate(() => {
+  setImmediate(async () => {
     try {
       const { scriptBuffer, cdnSourceStripped, domain } = req.body;
 
@@ -21,9 +21,11 @@ export const addScript = ({ req, res }) => {
 
           const newScriptBuffer = Buffer.from(scriptBuffer);
 
-          const minifiedCode = minify(scriptBuffer, { mangle: false })?.code;
-          const minBuffer = Buffer.from(minifiedCode);
-
+          // MOVE MINIFY TO QUEUE
+          const output = await minify(scriptBuffer, { mangle: false });
+          const { code } = output;
+          const minBuffer = Buffer.from(code);
+          // TODO: LOOK INTO ALTERNATIVE
           writeStream.write(newScriptBuffer, "base64");
           writeStreamMinified.write(minBuffer, "base64");
 
