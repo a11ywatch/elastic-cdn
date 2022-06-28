@@ -16,7 +16,7 @@
     "@grpc/grpc-js": "1.6.7",
     "@grpc/proto-loader": "0.6.13",
     "@swc/core": "^1.2.160",
-    "aws-sdk": "^2.666.0"
+    "aws-sdk": "^2.814.0"
   },
   "license": "MIT",
   "devDependencies": {
